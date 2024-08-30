@@ -119,4 +119,4 @@ const generateActionsString = (
     }`;
 };
 
-export { createBlink, fetchBlinkList };
+export { createBlink, fetchBlinkList, generateActionsString };
