@@ -1,7 +1,9 @@
 "use Client";
 
 import React from "react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
+import FunBlinkLogo from "../../public/FunBlinkLogo.png";
 
 // To avoid Hydration Mismatch Error
 const WalletMultiButtonDynamic = dynamic(
@@ -13,8 +15,17 @@ const WalletMultiButtonDynamic = dynamic(
 const HeaderItem = () => {
   return (
     <div className="flex justify-between items-center w-full">
-      <div className="text-2xl font-semibold tracking-wider">FunBlink</div>
-      <WalletMultiButtonDynamic  />
+      <div className="flex flex-row gap-2 text-2xl font-semibold tracking-wider">
+        <Image
+          src={FunBlinkLogo}
+          alt={"Logo"}
+          height={32}
+          width={32}
+          className="rounded-lg"
+        />
+        FunBlink
+      </div>
+      <WalletMultiButtonDynamic />
     </div>
   );
 };

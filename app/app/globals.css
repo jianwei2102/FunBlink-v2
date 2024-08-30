@@ -31,3 +31,19 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* button.wallet-adapter-button-trigger {
+  background-color: #003628;
+}
+
+button.wallet-adapter-button-trigger:hover {
+  background-color: #06d6a0;
+} */
