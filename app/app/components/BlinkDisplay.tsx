@@ -3,7 +3,7 @@ import img from "../../public/FunBlinkLogo.png";
 import { message } from "antd";
 
 interface BlinkDisplayProps {
-  key: number;
+  id: string;
   manualSend: boolean;
   title: string;
   description: string;
@@ -13,7 +13,7 @@ interface BlinkDisplayProps {
 }
 
 const BlinkDisplay = ({
-  key,
+  id,
   manualSend,
   title,
   description,
@@ -26,7 +26,7 @@ const BlinkDisplay = ({
   const copyToClipboard = () => {
     const baseHref = window.location.origin;
     const blinkURL = new URL(
-      `/api/actions?pda=${blinkAccount}&id=${key}`,
+      `/api/actions?pda=${blinkAccount}&id=${id}`,
       baseHref
     ).toString();
     navigator.clipboard

@@ -43,7 +43,7 @@ const Dashboard = () => {
         </Col>
         <Col span={12}>
           <BlinkDisplay
-            key={1}
+            id=""
             manualSend={manualSend}
             title={title}
             description={description}

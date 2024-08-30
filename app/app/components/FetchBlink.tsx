@@ -1,5 +1,6 @@
 "use client";
 
+import { Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Wallet } from "@project-serum/anchor";
 import { fetchBlinkList } from "../utils/utils";
@@ -12,7 +13,7 @@ export default function FetchBlink() {
 
   // State to hold the blink list
   const [blinkList, setBlinkList] = useState<any[]>([]);
-  const [blinkAccount, setBlinkAccount] = useState<string >("");
+  const [blinkAccount, setBlinkAccount] = useState<string>("");
 
   useEffect(() => {
     const getBlinkList = async () => {
@@ -30,24 +31,26 @@ export default function FetchBlink() {
   }, [connection, wallet]);
 
   return (
-    <div className="flex flex-row justify-center items-center w-full ">
+    <Row>
       {/* Map over the blinkList and pass each blink to the BlinkDisplay component */}
       {blinkList.map((blink, index) => (
-        <BlinkDisplay
-          key={blink.id}
-          manualSend={JSON.parse(blink.link).m}
-          title={blink.title}
-          description={blink.description}
-          iconURL={blink.iconURL}
-          actions={JSON.parse(blink.link).a}
-          blinkAccount={blinkAccount}
-        />
+        <Col key={index} span={8}>
+          <BlinkDisplay
+            id={blink.id}
+            manualSend={JSON.parse(blink.link).m}
+            title={blink.title}
+            description={blink.description}
+            iconURL={blink.icon}
+            actions={JSON.parse(blink.link).a}
+            blinkAccount={blinkAccount}
+          />
+        </Col>
       ))}
       {blinkList.length === 0 && (
         <div className="text-center my-4 font-semibold text-2xl italic text-blue-200">
           No blinks created yet
         </div>
       )}
-    </div>
+    </Row>
   );
 }
