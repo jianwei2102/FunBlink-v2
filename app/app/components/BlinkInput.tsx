@@ -1,24 +1,43 @@
-"use Client";
-
-import { Col, Row } from "antd";
 import React from "react";
-import { useState } from "react";
+import { Col, message, Row } from "antd";
+import { useRouter } from "next/navigation";
+import { createBlink } from "../utils/utils";
+import { Wallet } from "@project-serum/anchor";
+import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 
-const BlinkInput = () => {
-  const [toPubkey, setToPubkey] = useState("");
-  const [manualSend, setManualSend] = useState(true);
-  const [title, setTitle] = useState("Actions Example - Transfer Native SOL");
-  const [description, setDescription] = useState(
-    "Transfer SOL to another Solana wallet"
-  );
-  const [iconURL, setIconURL] = useState(
-    "https://cdn-icons-png.flaticon.com/512/6001/6001527.png"
-  );
-  const [actions, setActions] = useState([
-    { value: 1 },
-    { value: 2 },
-    { value: 5 },
-  ]);
+interface BlinkInputProps {
+  toPubkey: string;
+  setToPubkey: React.Dispatch<React.SetStateAction<string>>;
+  manualSend: boolean;
+  setManualSend: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  description: string;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  iconURL: string;
+  setIconURL: React.Dispatch<React.SetStateAction<string>>;
+  actions: { value: number }[];
+  setActions: React.Dispatch<React.SetStateAction<{ value: number }[]>>;
+}
+
+const BlinkInput = ({
+  toPubkey,
+  setToPubkey,
+  manualSend,
+  setManualSend,
+  title,
+  setTitle,
+  description,
+  setDescription,
+  iconURL,
+  setIconURL,
+  actions,
+  setActions,
+}: BlinkInputProps) => {
+  const router = useRouter();
+  const { connection } = useConnection();
+  const wallet = useAnchorWallet() as Wallet;
+  const [messageApi, contextHolder] = message.useMessage();
 
   // Add new action input
   const addAction = () => {
@@ -47,72 +66,48 @@ const BlinkInput = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // const formData = {
-    //   title,
-    //   description,
-    //   iconURL,
-    //   toPubkey,
-    //   actions: JSON.stringify(generateActionsString(actions, manualSend)),
-    // };
+    const dataToStore = {
+      a: actions,
+      m: manualSend,
+    };
 
-    // console.log("Form Data Submitted:", formData);
+    messageApi.open({
+      type: "loading",
+      content: "Creating Blink...",
+      duration: 0,
+    });
 
-    // try {
-    //   // Ensure the wallet is connected
-    //   if (!wallet.publicKey) {
-    //     throw new Error("Wallet is not connected");
-    //   }
+    let response = await createBlink(
+      connection,
+      wallet,
+      title,
+      iconURL,
+      description,
+      toPubkey,
+      JSON.stringify(dataToStore)
+    );
 
-    //   const blinkSeeds = [
-    //     Buffer.from("blink_list"),
-    //     wallet.publicKey.toBuffer(),
-    //   ].filter((seed) => seed !== undefined) as (Uint8Array | Buffer)[];
-
-    //   const [blinkAccount] = await PublicKey.findProgramAddress(
-    //     blinkSeeds,
-    //     programId
-    //   );
-
-    //   const anchorProvider = getProvider(connection, wallet);
-
-    //   const program = new Program(idl as Idl, programId, anchorProvider);
-    //   console.log("Blink Account:", blinkAccount.toBase58());
-    //   let id;
-    //   try {
-    //     const blinks = await program.account.blinkList.fetch(blinkAccount);
-    //     console.log("Blinks:", blinks);
-    //     const lastElement = blinks.blinks[blinks.blinks.length - 1];
-    //     id = parseInt(lastElement.id) + 1;
-    //   } catch (error) {
-    //     console.log("Error fetching blink:", error);
-    //     id = 0;
-    //   }
-
-    //   await program.methods
-    //     .createBlink(
-    //       id?.toString(),
-    //       title,
-    //       iconURL,
-    //       description,
-    //       "Transfer",
-    //       toPubkey,
-    //       JSON.stringify(generateActionsString(actions, manualSend))
-    //     )
-    //     .accounts({
-    //       blinkList: blinkAccount,
-    //       signer: anchorProvider.wallet.publicKey,
-    //       systemProgram: SystemProgram.programId,
-    //     })
-    //     .signers([])
-    //     .rpc();
-    //   toast.success("Blink created successfully");
-    // } catch (error) {
-    //   console.error("Error creating blink:", error);
-    // }
+    messageApi.destroy();
+    if (response.status === "success") {
+      messageApi.open({
+        type: "success",
+        content: "Blink created successfully",
+      });
+      setTimeout(() => {
+        router.refresh();
+      }, 500);
+    } else {
+      console.log("Error creating blink", response);
+      messageApi.open({
+        type: "error",
+        content: "Error creating blink",
+      });
+    }
   };
 
   return (
     <div className="p-4 border rounded-lg min-h-[760px]">
+      {contextHolder}
       <div className="flex flex-col gap-2">
         <div className="flex justify-center items-center">
           <div className="font-semibold text-4xl text-[#6495ED]">
