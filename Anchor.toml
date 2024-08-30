@@ -11,7 +11,7 @@ funblink = "5Z4UkWTCAQu2sNRKkq4GcredbKuF9jGdSxG5mH7ypY6B"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "/Users/jianwei/.config/solana/id.json"
 
 [scripts]

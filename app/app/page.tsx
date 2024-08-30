@@ -1,4 +1,5 @@
 import Image from "next/image";
+import IDL from "../../target/idl/funblink.json";
 
 export default function Home() {
   return (
