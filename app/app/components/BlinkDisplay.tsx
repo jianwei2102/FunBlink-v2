@@ -1,23 +1,50 @@
 import Image from "next/image";
 import img from "../../public/FunBlinkLogo.png";
+import { message } from "antd";
 
 interface BlinkDisplayProps {
+  key: number;
   manualSend: boolean;
   title: string;
   description: string;
   iconURL: string;
   actions: { value: number }[];
+  blinkAccount: string | undefined;
 }
 
 const BlinkDisplay = ({
+  key,
   manualSend,
   title,
   description,
   iconURL,
   actions,
+  blinkAccount,
 }: BlinkDisplayProps) => {
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const copyToClipboard = () => {
+    const baseHref = window.location.origin;
+    const blinkURL = new URL(
+      `/api/actions?pda=${blinkAccount}&id=${key}`,
+      baseHref
+    ).toString();
+    navigator.clipboard
+      .writeText(blinkURL)
+      .then(() => {
+        messageApi.open({
+          type: "success",
+          content: "Blink URL copied to clipboard",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  };
+
   return (
-    <div className="basis-1/2 p-4 text-center flex align-middle justify-center">
+    <div className="p-4 text-center flex align-middle justify-center">
+      {contextHolder}
       <div className="w-2/3 cursor-default overflow-hidden rounded-2xl border border-stroke-primary bg-white shadow-action">
         <div className="max-h-[100cqw] overflow-y-hidden px-5 pt-5 flex justify-center">
           <Image
@@ -31,7 +58,7 @@ const BlinkDisplay = ({
         <div className="flex flex-col p-5 text-start text-black">
           <div className="mb-2 flex items-center gap-2">
             <span className="inline-flex items-center truncate text-subtext text-text-link">
-              localhost:3000
+              https://funblink-v2.vercel.app/
             </span>
             <a
               href="https://docs.dialect.to/documentation/actions/security"
@@ -111,6 +138,14 @@ const BlinkDisplay = ({
                   </div>
                 </div>
               </div>
+            )}
+            {blinkAccount != undefined && (
+              <button
+                onClick={copyToClipboard}
+                className="w-full p-2 bg-green-200 rounded-full"
+              >
+                Copy Blink URL to Clipboard
+              </button>
             )}
           </div>
         </div>

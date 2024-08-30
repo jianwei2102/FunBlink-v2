@@ -35,7 +35,6 @@ const createBlink = async (
       program.programId
     );
 
-    console.log("Blink Account:", blinkAccount.toBase58());
     let id;
     try {
       const blinks = await program.account.blinkList.fetch(blinkAccount);
@@ -72,6 +71,25 @@ const createBlink = async (
   }
 };
 
+const fetchBlinkList = async (connection: Connection, wallet: Wallet) => {
+  try {
+    const anchorProvider = getProvider(connection, wallet);
+    const program = new Program(idl as Idl, programID, anchorProvider);
+
+    const blinkSeeds = [Buffer.from("blink_list"), wallet.publicKey.toBuffer()];
+    const [blinkAccount] = await PublicKey.findProgramAddress(
+      blinkSeeds,
+      program.programId
+    );
+    const blinkAccountString = blinkAccount.toBase58();
+
+    const blinks = await program.account.blinkList.fetch(blinkAccount);
+    return { status: "success", data: { blinks }, pda: { blinkAccountString } };
+  } catch (error) {
+    return { status: "error", data: error };
+  }
+};
+
 const generateActionsString = (
   actions: { value: number }[],
   manualSend: boolean
@@ -101,4 +119,4 @@ const generateActionsString = (
     }`;
 };
 
-export { createBlink };
+export { createBlink, fetchBlinkList };

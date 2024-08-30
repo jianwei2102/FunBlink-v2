@@ -1,9 +1,10 @@
 "use client";
 
-import { Row, Col } from "antd";
+import { Row, Col, Divider } from "antd";
 import { useState } from "react";
 import BlinkInput from "../components/BlinkInput";
 import BlinkDisplay from "../components/BlinkDisplay";
+import FetchBlink from "../components/FetchBlink";
 
 const Dashboard = () => {
   const [toPubkey, setToPubkey] = useState("");
@@ -22,33 +23,48 @@ const Dashboard = () => {
   ]);
 
   return (
-    <Row align="middle" className="px-12 py-6" gutter={[32, 32]}>
-      <Col span={12}>
-        <BlinkInput
-          toPubkey={toPubkey}
-          setToPubkey={setToPubkey}
-          manualSend={manualSend}
-          setManualSend={setManualSend}
-          title={title}
-          setTitle={setTitle}
-          description={description}
-          setDescription={setDescription}
-          iconURL={iconURL}
-          setIconURL={setIconURL}
-          actions={actions}
-          setActions={setActions}
-        />
-      </Col>
-      <Col span={12}>
-        <BlinkDisplay
-          manualSend={manualSend}
-          title={title}
-          description={description}
-          iconURL={iconURL}
-          actions={actions}
-        />
-      </Col>
-    </Row>
+    <div className="px-12 py-6">
+      <Row align="middle" gutter={[32, 32]}>
+        <Col span={12}>
+          <BlinkInput
+            toPubkey={toPubkey}
+            setToPubkey={setToPubkey}
+            manualSend={manualSend}
+            setManualSend={setManualSend}
+            title={title}
+            setTitle={setTitle}
+            description={description}
+            setDescription={setDescription}
+            iconURL={iconURL}
+            setIconURL={setIconURL}
+            actions={actions}
+            setActions={setActions}
+          />
+        </Col>
+        <Col span={12}>
+          <BlinkDisplay
+            key={1}
+            manualSend={manualSend}
+            title={title}
+            description={description}
+            iconURL={iconURL}
+            actions={actions}
+            blinkAccount={undefined}
+          />
+        </Col>
+      </Row>
+      <Divider className="bg-slate-200" />
+      <Row>
+        <Col span={24}>
+          <span className="flex align-middle text-center">
+            <span className="w-full font-semibold text-4xl text-[#6495ED]">
+              Created Blink(s)
+            </span>
+          </span>
+          <FetchBlink />
+        </Col>
+      </Row>
+    </div>
   );
 };
 
