@@ -187,9 +187,15 @@ async function loadUserPDA(requestUrl: URL) {
   const id = requestUrl.searchParams.get("id");
 
   try {
+    const dummyWallet = {
+      publicKey: null,
+      signTransaction: async (tx: Transaction) => tx,
+      signAllTransactions: async (txs: Transaction[]) => txs,
+    };
+
     const anchorProvider = new AnchorProvider(
       new Connection(clusterApiUrl("devnet")),
-      null,
+      dummyWallet as any,
       AnchorProvider.defaultOptions()
     );
 
