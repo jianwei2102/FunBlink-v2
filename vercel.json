@@ -1,0 +1,9 @@
+{
+  "builds": [
+    {
+      "src": "app/**/*",
+      "use": "@vercel/next"
+    }
+  ],
+  "ignoreCommand": "cp -r ../target/idl ./app/idl"
+}
