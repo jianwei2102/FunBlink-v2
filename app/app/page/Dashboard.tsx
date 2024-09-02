@@ -9,12 +9,12 @@ import FetchBlink from "../components/FetchBlink";
 const Dashboard = () => {
   const [toPubkey, setToPubkey] = useState("");
   const [manualSend, setManualSend] = useState(true);
-  const [title, setTitle] = useState("Actions Example - Transfer Native SOL");
+  const [title, setTitle] = useState("Actions Example - Transfer Send Token");
   const [description, setDescription] = useState(
-    "Transfer SOL to another Solana wallet"
+    "Transfer SEND token to another Solana wallet"
   );
   const [iconURL, setIconURL] = useState(
-    "https://cdn-icons-png.flaticon.com/512/6001/6001527.png"
+    "https://miro.medium.com/v2/resize:fit:1400/0*9TfBXsi8Vsh-mj2q"
   );
   const [actions, setActions] = useState([
     { value: 1 },

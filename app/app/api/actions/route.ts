@@ -20,6 +20,11 @@ import {
   Transaction,
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
+import {
+  createAssociatedTokenAccountInstruction,
+  createTransferInstruction,
+  getAssociatedTokenAddress,
+} from "@solana/spl-token";
 
 // Create the standard headers for this route (including CORS)
 const headers = createActionHeaders();
@@ -90,7 +95,7 @@ export async function POST(req: Request) {
 
     const body: ActionPostRequest = await req.json();
 
-    // validate the client provided input
+    // Validate the client provided input
     let account: PublicKey;
     try {
       account = new PublicKey(body.account);
@@ -101,30 +106,52 @@ export async function POST(req: Request) {
       });
     }
 
-    const connection = new Connection(clusterApiUrl("devnet"));
+    const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
-    // ensure the receiving account will be rent exempt
-    const minimumBalance = await connection.getMinimumBalanceForRentExemption(
-      0 // note: simple accounts that just store native SOL have `0` bytes of data
+    // SEND Token Mint Address
+    const tokenMintAddress = new PublicKey(
+      "SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa"
     );
-    if (amount * LAMPORTS_PER_SOL < minimumBalance) {
-      throw `account may not be rent exempt: ${toPubkey.toBase58()}`;
-    }
 
-    // create an instruction to transfer native SOL from one wallet to another
-    const transferSolInstruction = SystemProgram.transfer({
-      fromPubkey: new PublicKey(account),
-      toPubkey: toPubkey,
-      lamports: amount * LAMPORTS_PER_SOL,
-    });
+    // Get the associated token addresses for the sender and receiver
+    const fromTokenAccount = await getAssociatedTokenAddress(
+      tokenMintAddress,
+      account
+    );
+    const toTokenAccount = await getAssociatedTokenAddress(
+      tokenMintAddress,
+      new PublicKey(toPubkey)
+    );
 
     // create a transaction
     const tx = new Transaction();
-    tx.feePayer = new PublicKey(account);
+    tx.feePayer = account;
     tx.recentBlockhash = (
       await connection.getLatestBlockhash({ commitment: "finalized" })
     ).blockhash;
-    tx.add(transferSolInstruction);
+
+    // Check if the receiving account exists; if not, create it
+    const toTokenAccountInfo = await connection.getAccountInfo(toTokenAccount);
+    if (toTokenAccountInfo === null) {
+      // Create the associated token account for the receiver
+      const createToAccountIx = createAssociatedTokenAccountInstruction(
+        account, // Payer of the transaction
+        toTokenAccount, // Associated token account to be created
+        new PublicKey(toPubkey), // Receiver's public key
+        tokenMintAddress // The token mint
+      );
+      tx.add(createToAccountIx);
+    }
+
+    // Create a transfer instruction for SPL tokens
+    const transferTokenInstruction = createTransferInstruction(
+      fromTokenAccount, // Sender's associated token account
+      toTokenAccount, // Receiver's associated token account
+      account, // Owner of the sender's account
+      amount * Math.pow(10, 6) // Number of tokens to send
+    );
+
+    tx.add(transferTokenInstruction);
 
     const serialTX = tx
       .serialize({ requireAllSignatures: false, verifySignatures: false })
@@ -132,7 +159,7 @@ export async function POST(req: Request) {
 
     const payload: ActionPostResponse = {
       transaction: serialTX,
-      message: `Send ${amount} SOL to ${toPubkey.toBase58()}`,
+      message: `Send ${amount} SEND token to ${toPubkey.toBase58()}`,
     };
 
     return Response.json(payload, {

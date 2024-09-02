@@ -111,7 +111,7 @@ const BlinkInput = ({
       <div className="flex flex-col gap-2">
         <div className="flex justify-center items-center">
           <div className="font-semibold text-4xl text-[#6495ED]">
-            Create Blink
+            Create Blink (Devnet)
           </div>
         </div>
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>

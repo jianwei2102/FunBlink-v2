@@ -119,7 +119,7 @@ const BlinkDisplay = ({
                 >
                   <div className="text-white bg-black rounded-lg flex w-full items-center justify-center text-nowrap rounded-button px-4 py-3 text-text font-semibold transition-colors motion-reduce:transition-none bg-button text-text-button hover:bg-button-hover">
                     <span className="min-w-0 truncate">
-                      Send {action.value} SOL
+                      Send {action.value} SEND
                     </span>
                   </div>
                 </div>
@@ -129,11 +129,11 @@ const BlinkDisplay = ({
               <div>
                 <div className="peer relative flex min-h-10 items-center gap-1.5 border border-input-stroke py-1.5 pl-4 pr-1.5 transition-colors motion-reduce:transition-none focus-within:has-[:invalid]:border-input-stroke-error focus-within:has-[:valid]:border-input-stroke-selected focus-within:hover:has-[:invalid]:border-input-stroke-error focus-within:hover:has-[:valid]:border-input-stroke-selected hover:has-[:enabled]:border-input-stroke-hover rounded-input-standalone">
                   <div className="font-thin flex-1 truncate bg-input-bg text-text-input outline-none placeholder:text-text-input-placeholder disabled:text-text-input-disabled">
-                    Enter the amount of SOL to send
+                    Enter the amount of SEND Token to send
                   </div>
                   <div className="min-w-0">
                     <div className="text-white bg-[#737373] rounded-lg  flex w-full items-center justify-center text-nowrap rounded-button px-4 py-3 text-text font-semibold transition-colors motion-reduce:transition-none bg-button-disabled text-text-button-disabled">
-                      <span className="min-w-0 truncate">Send SOL</span>
+                      <span className="min-w-0 truncate">Send SEND token</span>
                     </div>
                   </div>
                 </div>

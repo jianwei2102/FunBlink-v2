@@ -97,17 +97,17 @@ const generateActionsString = (
   const baseHref = "${baseHref}";
 
   const actionStrings = actions.map((action) => {
-    return `{"label":"Send ${action.value} SOL","href":"${baseHref}&amount=${action.value}"}`;
+    return `{"label":"Send ${action.value} SEND","href":"${baseHref}&amount=${action.value}"}`;
   });
 
   if (manualSend) {
     actionStrings.push(`{
-        "label":"Send SOL",
+        "label":"Send SEND token",
         "href":"${baseHref}&amount={amount}",
         "parameters":[
           {
             "name":"amount",
-            "label":"Enter the amount of SOL to send",
+            "label":"Enter the amount of SEND token to send",
             "required":true
           }
         ]
